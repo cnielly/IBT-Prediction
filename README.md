@@ -1,4 +1,4 @@
 # IBT-Prediction
 Use case presented by Eleven. 
 
-This file is the Read Me fie. To be filed later
+This file is the Read_Me file. To be filed later
