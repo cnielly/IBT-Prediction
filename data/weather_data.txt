@@ -1,0 +1,16 @@
+WSF2 - Fastest 2-minute wind speed - Take max
+WSF5 - Fastest 5-second wind speed - Take max
+SNOW - Snowfall - Take max
+WT03 - Thunder - Take max
+PRCP - Precipitation - Take mean and median
+WT08 - Smoke or haze - Take max
+SNWD - Snow depth - Delete
+WDF2 - Direction of fastest 2-minute wind - Take mean and median
+AWND - Average wind speed - Take mean and median
+WDF5 - Direction of fastest 5-second wind - Take mean and median
+PGTM - Peak gust time - Delete
+WT01 - Fog, ice fog, or freezing fog (may include heavy fog) - Take max
+TMAX - Maximum temperature - Take max
+WT02 - Heavy fog or heaving freezing fog (not always distinguished from fog) - Take max
+TAVG - Average Temperature - Take mean and median
+TMIN - Minimum temperature - Take min
