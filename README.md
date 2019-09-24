@@ -29,5 +29,5 @@ As future data scientists, we enjoyed the "learning-by-doing" philosophy of this
 
 *Gautier DULAC, Sophie BROSSE, Antoine SALAMITOU, Léonard FLEUTOT and Cyprien NIELLY*
 
-*Students of the MSc "Data Science for Business", between HEC Paris and Ecole polytechnique. *
+*Students of the MSc "Data Science for Business", between HEC Paris and Ecole polytechnique.*
 
