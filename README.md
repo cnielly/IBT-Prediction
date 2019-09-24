@@ -25,7 +25,7 @@ The goal of this project is to improve the taxi time prediction thanks to Machin
 - `models` folder: build, train and test ML models such as Mixed Effects or Random Forest. 
 
 We would like to thank Eleven for this great opportunity to work on a real life case. 
-As future data scientists, we think appreciated the "learning by doing" philosophy of this course.
+As future data scientists, we enjoyed the "learning-by-doing" philosophy of this course.
 
 *Gautier DULAC, Sophie BROSSE, Antoine SALAMITOU, Léonard FLEUTOT and Cyprien NIELLY*
 
