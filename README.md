@@ -27,7 +27,7 @@ The goal of this project is to improve the taxi time prediction thanks to Machin
 We would like to thank Eleven for this great opportunity to work on a real life case. 
 As future data scientists, we think appreciated the "learning by doing" philosophy of this course.
 
-*Gautier DULAC, Sophie BROSSE, Antoine SALAMITOU, Léonard FLEUTOT, Cyprien NIELY*
+*Gautier DULAC, Sophie BROSSE, Antoine SALAMITOU, Léonard FLEUTOT and Cyprien NIELLY*
 
 *Students of the MSc "Data Science for Business", between HEC Paris and Ecole polytechnique. *
 
