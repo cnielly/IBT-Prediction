@@ -1,0 +1,185 @@
+---
+title: "MEModels"
+author: "Gautier DULAC"
+date: "19 septembre 2019"
+output: html_document
+---
+
+# Packages
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(lme4)
+library(readr)
+library(MLmetrics)
+```
+
+# Data
+
+```{r}
+CleanedDB <- read_csv("D:/0 - Boulot/5 - X4/03. Supercase Eleven/Data/3. Clean/DatasetCleanFinal.csv")
+
+TestDB <- read_csv("D:/0 - Boulot/5 - X4/03. Supercase Eleven/Data/3. Clean/TestsetCleanFinal.csv")
+
+summary(CleanedDB)
+```
+
+
+
+## Split Train / Valid
+
+```{r}
+CleanedDB <- CleanedDB[order(CleanedDB$Date),]
+
+TrainSet <- CleanedDB
+ValidSet <- TestDB
+
+```
+
+
+
+# Linear Models
+
+```{r}
+lm0 <- lm(data = TrainSet, LogTaxiTime ~ 1)
+summary(lm0)
+```
+
+```{r}
+EstimLM0 <- ValidSet %>% mutate(LM0ESTIMATE = predict(lm0, newdata = ValidSet, type="response")) %>% 
+  mutate(TaxiTimePred = exp(LM0ESTIMATE)-1) %>%
+  mutate(SQRERR = (TaxiTime - TaxiTimePred)**2)
+
+MSELM0 = mean(EstimLM0$SQRERR)
+RMSELM0 = sqrt(MSELM0)
+
+EstimLM0$Accuracy3 = (abs(EstimLM0$TaxiTime-EstimLM0$TaxiTimePred)<=3)
+Accu3LM0 = mean(EstimLM0$Accuracy3)
+
+EstimLM0$Accuracy5 = (abs(EstimLM0$TaxiTime-EstimLM0$TaxiTimePred)<=5)
+Accu5LM0 = mean(EstimLM0$Accuracy5)
+```
+
+
+```{r}
+lm1 <- lm(data = TrainSet, LogTaxiTime ~ Date + RunwayNumber + StandNumber + AWNDmean + PRCPmean + TAVGmean + WDF5mean + WT01max + WT02max + WT03max + WT08max + IceRoad + WetDay + NbPlanesLast10Mn + Hour + WeekDay + ParkingArea)
+
+summary(lm1)
+
+EstimLM1 <- ValidSet %>% mutate(LM1ESTIMATE = predict(lm1, newdata = ValidSet, type="response")) %>% 
+  mutate(TaxiTimePred = exp(LM1ESTIMATE)-1) %>%
+  mutate(SQRERR = (TaxiTime - TaxiTimePred)**2)
+
+MSELM1 = mean(EstimLM1$SQRERR)
+RMSELM1 = sqrt(MSELM1)
+
+EstimLM1$Accuracy3 = (abs(EstimLM1$TaxiTime-EstimLM1$TaxiTimePred)<=3)
+Accu3LM1 = mean(EstimLM1$Accuracy3)
+
+EstimLM1$Accuracy5 = (abs(EstimLM1$TaxiTime-EstimLM1$TaxiTimePred)<=5)
+Accu5LM1 = mean(EstimLM1$Accuracy5)
+
+anova(lm0,lm1)
+```
+
+
+```{r}
+lm2 <- lm(data = TrainSet, LogTaxiTime ~ AWNDmean + PRCPmean + TAVGmean + WDF5mean + WT01max + WT02max + WT03max + WT08max + IceRoad + WetDay)
+
+summary(lm2)
+
+EstimLM2 <- ValidSet %>% mutate(LM2ESTIMATE = predict(lm2, newdata = ValidSet, type="response")) %>% 
+  mutate(TaxiTimePred = exp(LM2ESTIMATE)-1) %>%
+  mutate(SQRERR = (TaxiTime - TaxiTimePred)**2)
+
+MSELM2 = mean(EstimLM2$SQRERR)
+RMSELM2 = sqrt(MSELM2)
+
+EstimLM2$Accuracy3 = (abs(EstimLM2$TaxiTime-EstimLM2$TaxiTimePred)<=3)
+Accu3LM2 = mean(EstimLM2$Accuracy3)
+
+EstimLM2$Accuracy5 = (abs(EstimLM2$TaxiTime-EstimLM2$TaxiTimePred)<=5)
+Accu5LM2 = mean(EstimLM2$Accuracy5)
+
+```
+
+```{r}
+lm3 <- lm(data = TrainSet, LogTaxiTime ~ RunwayNumber + StandNumber + NbPlanesLast10Mn + ParkingArea)
+
+summary(lm3)
+
+EstimLM3 <- ValidSet %>% mutate(LM3ESTIMATE = predict(lm3, newdata = ValidSet, type="response")) %>% 
+  mutate(TaxiTimePred = exp(LM3ESTIMATE)-1) %>%
+  mutate(SQRERR = (TaxiTime - TaxiTimePred)**2)
+
+MSELM3 = mean(EstimLM3$SQRERR)
+RMSELM3 = sqrt(MSELM3)
+
+EstimLM3$Accuracy3 = (abs(EstimLM3$TaxiTime-EstimLM3$TaxiTimePred)<=3)
+Accu3LM3 = mean(EstimLM3$Accuracy3)
+
+EstimLM3$Accuracy5 = (abs(EstimLM3$TaxiTime-EstimLM3$TaxiTimePred)<=5)
+Accu5LM3 = mean(EstimLM3$Accuracy5)
+
+```
+
+
+# Mixed Effect Models
+
+```{r}
+CleanedDB$RunwayNumber = as.factor(CleanedDB$RunwayNumber)
+CleanedDB$StandNumber = as.factor(CleanedDB$StandNumber)
+
+ValidSet <- ValidSet[ValidSet$StandNumber!=158,]
+
+```
+
+
+## Lme0 
+
+```{r}
+lme0 <- lmer(data = TrainSet, LogTaxiTime ~ (1|RunwayNumber) + (1|StandNumber) + NbPlanesLast10Mn + ParkingArea)
+
+summary(lme0)
+
+EstimLME0 <- ValidSet %>% mutate(LMESTIMATE = predict(lme0, newdata = ValidSet, type="response")) %>% 
+  mutate(TaxiTimePred = exp(LMESTIMATE)-1) %>%
+  mutate(SQRERR = (TaxiTime - TaxiTimePred)**2)
+
+MSELME0 = mean(EstimLME0$SQRERR)
+RMSELME0 = sqrt(MSELME0)
+
+EstimLME0$Accuracy3 = (abs(EstimLME0$TaxiTime-EstimLME0$TaxiTimePred)<=3)
+Accu3LME0 = mean(EstimLME0$Accuracy3)
+
+EstimLME0$Accuracy5 = (abs(EstimLME0$TaxiTime-EstimLME0$TaxiTimePred)<=5)
+Accu5LME0 = mean(EstimLME0$Accuracy5)
+```
+
+## Lme1
+
+```{r}
+lme1 <- lmer(data = TrainSet, LogTaxiTime ~ 
+               (AWNDmean + WDF5mean + IceRoad + WetDay|RunwayNumber) + 
+               (ParkingArea|StandNumber) + 
+               (NbPlanesLast10Mn|Hour) + 
+               (1|WeekDay) +
+               PRCPmean + TAVGmean + WT01max + WT02max + WT03max + WT08max)
+
+summary(lme1)
+
+EstimLME1 <- ValidSet %>% mutate(LMESTIMATE = predict(lme1, newdata = ValidSet, type="response")) %>% 
+  mutate(TaxiTimePred = exp(LMESTIMATE)-1) %>%
+  mutate(SQRERR = (TaxiTime - TaxiTimePred)**2)
+
+MSELME1 = mean(EstimLME1$SQRERR)
+RMSELME1 = sqrt(MSELME1)
+
+EstimLME1$Accuracy3 = (abs(EstimLME1$TaxiTime-EstimLME1$TaxiTimePred)<=3)
+Accu3LME1 = mean(EstimLME1$Accuracy3)
+
+EstimLME1$Accuracy5 = (abs(EstimLME1$TaxiTime-EstimLME1$TaxiTimePred)<=5)
+Accu5LME1 = mean(EstimLME1$Accuracy5)
+```
+
